@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Osaf AI</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+
+:root {
+  --bg: #f5f6fa;
+  --white: #ffffff;
+  --border: #e4e7f0;
+  --text: #1a1d2e;
+  --muted: #7b82a0;
+  --hse: #0a8f6a;
+  --hse-light: #e6f7f2;
+  --css: #2563eb;
+  --css-light: #eff6ff;
+  --ebay: #d97706;
+  --ebay-light: #fffbeb;
+  --ai: #7c3aed;
+  --ai-light: #f5f3ff;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --nav-h: 64px;
+  --radius: 16px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  padding-bottom: calc(var(--nav-h) + 16px);
+  font-size: 15px;
+}
+
+/* NAV */
+.nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 12px;
+  transition: background 0.15s;
+  min-width: 56px;
+}
+
+.nav-item.active { background: var(--bg); }
+.nav-item .icon { font-size: 1.4rem; }
+.nav-item .label { font-size: 0.62rem; font-weight: 600; color: var(--muted); letter-spacing: 0.3px; }
+.nav-item.active .label { color: var(--text); }
+
+/* SCREENS */
+.screen { display: none; padding: 0 0 16px 0; }
+.screen.active { display: block; }
+
+/* PAGE HEADER */
+.page-header {
+  background: var(--white);
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.page-header h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.page-header p { color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
+
+/* CARDS */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin: 12px 16px 0;
+  box-shadow: var(--shadow);
+}
+
+.card-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ===== HOME SCREEN ===== */
+.greeting {
+  background: linear-gradient(135deg, #1a1d2e, #2d3261);
+  color: white;
+  padding: 24px 20px;
+  margin-bottom: 4px;
+}
+
+.greeting h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.greeting p { opacity: 0.7; font-size: 0.85rem; margin-top: 4px; }
+
+.nebosh-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(10,143,106,0.2);
+  border: 1px solid rgba(10,143,106,0.4);
+  color: #4ade80;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.pulse { width: 7px; height: 7px; background: #4ade80; border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 12px 16px 0;
+}
+
+.stat-card {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 14px 10px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.stat-label { font-size: 0.65rem; color: var(--muted); margin-top: 2px; font-weight: 500; }
+
+/* CHECKLIST */
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+}
+
+.check-item:last-child { border-bottom: none; padding-bottom: 0; }
+.check-item:first-child { padding-top: 0; }
+
+.check-box {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  transition: all 0.15s;
+}
+
+.check-item.done .check-box { background: var(--hse); border-color: var(--hse); color: white; }
+.check-item.done .check-text { text-decoration: line-through; color: var(--muted); }
+.check-text { font-size: 0.85rem; flex: 1; }
+.check-meta { font-size: 0.72rem; color: var(--muted); }
+
+/* PROGRESS BAR */
+.prog-wrap { margin-top: 8px; }
+.prog-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); margin-bottom: 6px; }
+.prog-bar { height: 8px; background: var(--bg); border-radius: 99px; overflow: hidden; }
+.prog-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+
+/* AREA PILLS */
+.area-pills { display: flex; gap: 8px; padding: 12px 16px 0; overflow-x: auto; }
+.area-pill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-radius: 20px;
+  font-size: 0.78rem; font-weight: 600;
+  white-space: nowrap; cursor: pointer;
+  border: 2px solid transparent; transition: all 0.15s;
+}
+
+.pill-hse { background: var(--hse-light); color: var(--hse); border-color: var(--hse); }
+.pill-css { background: var(--css-light); color: var(--css); border-color: var(--css); }
+.pill-ebay { background: var(--ebay-light); color: var(--ebay); border-color: var(--ebay); }
+.pill-ai { background: var(--ai-light); color: var(--ai); border-color: var(--ai); }
+
+/* KEY DATES */
+.date-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.date-item:last-child { border-bottom: none; padding-bottom: 0; }
+.date-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.date-info { flex: 1; }
+.date-title { font-size: 0.82rem; font-weight: 600; }
+.date-sub { font-size: 0.72rem; color: var(--muted); margin-top: 1px; }
+.date-badge-pill {
+  font-size: 0.68rem; font-weight: 700;
+  padding: 3px 10px; border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* ===== TRACKER ===== */
+.section-tabs {
+  display: flex; gap: 0;
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 4px;
+  margin: 12px 16px 0;
+}
+
+.tab {
+  flex: 1; text-align: center;
+  padding: 9px 4px;
+  border-radius: 9px;
+  font-size: 0.75rem; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+  color: var(--muted);
+}
+
+.tab.active { background: var(--white); color: var(--text); box-shadow: var(--shadow); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* INPUT STYLES */
+.input {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: var(--text);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.input:focus { border-color: var(--ai); }
+
+textarea.input { resize: none; min-height: 80px; }
+
+.select {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: var(--text);
+  background: var(--white);
+  outline: none;
+  appearance: none;
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 11px 20px;
+  border-radius: 10px;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; transition: opacity 0.15s;
+  width: 100%;
+}
+
+.btn:hover { opacity: 0.88; }
+.btn:active { opacity: 0.75; }
+.btn-primary { background: var(--ai); color: white; }
+.btn-hse { background: var(--hse); color: white; }
+.btn-css { background: var(--css); color: white; }
+.btn-ebay { background: var(--ebay); color: white; }
+.btn-sm { padding: 7px 14px; font-size: 0.78rem; width: auto; }
+.btn-outline { background: white; border: 1.5px solid var(--border); color: var(--text); }
+
+/* APPS TABLE */
+.app-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 0; border-bottom: 1px solid var(--border);
+}
+.app-row:last-child { border-bottom: none; }
+.app-company { font-weight: 600; font-size: 0.85rem; }
+.app-role { font-size: 0.75rem; color: var(--muted); margin-top: 1px; }
+.app-info { flex: 1; }
+.status-pill {
+  font-size: 0.68rem; font-weight: 700;
+  padding: 4px 10px; border-radius: 20px;
+  cursor: pointer;
+}
+.s-applied { background: var(--css-light); color: var(--css); }
+.s-pending { background: var(--ebay-light); color: var(--ebay); }
+.s-interview { background: var(--hse-light); color: var(--hse); }
+.s-rejected { background: #fee2e2; color: var(--danger); }
+
+/* ===== AI CHAT ===== */
+.ai-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 12px 16px 0;
+}
+
+.ai-tab-card {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 16px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  border: 2px solid transparent;
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.ai-tab-card.active { border-color: var(--ai); background: var(--ai-light); }
+.ai-tab-card .icon { font-size: 1.6rem; margin-bottom: 6px; }
+.ai-tab-card .name { font-size: 0.78rem; font-weight: 700; }
+.ai-tab-card .desc { font-size: 0.68rem; color: var(--muted); margin-top: 2px; }
+
+.chat-area {
+  margin: 12px 16px 0;
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 340px);
+  min-height: 300px;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.msg {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.83rem;
+  line-height: 1.5;
+}
+
+.msg.user {
+  background: var(--ai);
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.msg.ai {
+  background: var(--bg);
+  color: var(--text);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.msg.thinking {
+  background: var(--bg);
+  color: var(--muted);
+  align-self: flex-start;
+  font-style: italic;
+}
+
+.chat-input-area {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.chat-input {
+  flex: 1;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.83rem;
+  color: var(--text);
+  resize: none;
+  outline: none;
+  max-height: 100px;
+  overflow-y: auto;
+  background: var(--bg);
+}
+
+.chat-input:focus { border-color: var(--ai); }
+
+.send-btn {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--ai);
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.send-btn:hover { opacity: 0.85; }
+
+/* QUICK PROMPTS */
+.quick-prompts {
+  display: flex; gap: 8px; overflow-x: auto;
+  padding: 8px 16px 0;
+  scrollbar-width: none;
+}
+
+.quick-prompt {
+  white-space: nowrap;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.75rem; font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--text);
+}
+
+.quick-prompt:hover { border-color: var(--ai); color: var(--ai); }
+
+/* EBAY */
+.ebay-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.ebay-stat {
+  background: var(--ebay-light);
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+}
+
+.ebay-stat .num {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--ebay);
+}
+
+.ebay-stat .lbl { font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
+
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* MISC */
+.divider { height: 1px; background: var(--border); margin: 12px 0; }
+.gap { margin-top: 10px; }
+.small { font-size: 0.75rem; color: var(--muted); }
+.tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+
+.empty { text-align: center; color: var(--muted); font-size: 0.82rem; padding: 24px 0; }
+
+/* WEEKLY */
+.week-bar { display: flex; align-items: flex-end; gap: 4px; height: 80px; margin-top: 8px; }
+.day-bar { flex: 1; border-radius: 6px 6px 0 0; transition: height 0.4s ease; min-height: 4px; }
+.week-labels { display: flex; gap: 4px; margin-top: 4px; }
+.week-label { flex: 1; text-align: center; font-size: 0.65rem; color: var(--muted); }
+
+.scroll-content { overflow-y: auto; }
+
+</style>
+</head>
+<body>
+
+<!-- ========== HOME ========== -->
+<div class="screen active" id="screen-home">
+  <div class="greeting">
+    <h2 id="greeting-text">Good morning, Osaf 👋</h2>
+    <p id="greeting-date"></p>
+    <div class="nebosh-pill">
+      <div class="pulse"></div>
+      NEBOSH result: <span id="nebosh-days"></span> days to go
+    </div>
+  </div>
+
+  <div class="area-pills">
+    <div class="area-pill pill-hse" onclick="goTo('tracker','hse')">🦺 HSE Career</div>
+    <div class="area-pill pill-css" onclick="goTo('tracker','css')">📚 CSS Study</div>
+    <div class="area-pill pill-ebay" onclick="goTo('tracker','ebay')">🛒 eBay</div>
+    <div class="area-pill pill-ai" onclick="goTo('ai','cover')">🤖 AI Tools</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--hse)" id="home-apps">0</div>
+      <div class="stat-label">Jobs applied</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--css)" id="home-study">0</div>
+      <div class="stat-label">Study hours</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--ebay)">£<span id="home-rev">0</span></div>
+      <div class="stat-label">eBay revenue</div>
+    </div>
+  </div>
+
+  <!-- TODAY'S CHECKLIST -->
+  <div class="card">
+    <div class="card-title">✅ Today's 1-Hour Block</div>
+    <div id="home-checklist">
+      <div class="check-item" onclick="toggleCheck(this,'hse')">
+        <div class="check-box">✓</div>
+        <span class="check-text">Apply to 1 HSE/SHEQ role</span>
+        <span class="check-meta">20 min</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'hse')">
+        <div class="check-box">✓</div>
+        <span class="check-text">LinkedIn — connect or message</span>
+        <span class="check-meta">20 min</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,null)">
+        <div class="check-box">✓</div>
+        <span class="check-text">Post or engage on LinkedIn</span>
+        <span class="check-meta">10 min</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,null)">
+        <div class="check-box">✓</div>
+        <span class="check-text">Read 1 HSE article or news</span>
+        <span class="check-meta">10 min</span>
+      </div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-label"><span>Progress</span><span id="home-prog-pct">0%</span></div>
+      <div class="prog-bar"><div class="prog-fill" id="home-prog-bar" style="width:0%;background:var(--hse)"></div></div>
+    </div>
+  </div>
+
+  <!-- KEY DATES -->
+  <div class="card">
+    <div class="card-title">📅 Key Dates</div>
+    <div class="date-item">
+      <div class="date-dot" style="background:var(--hse)"></div>
+      <div class="date-info">
+        <div class="date-title">NEBOSH IGC Result</div>
+        <div class="date-sub">Expected end of July 2026</div>
+      </div>
+      <div class="date-badge-pill" style="background:var(--hse-light);color:var(--hse)" id="kd-nebosh"></div>
+    </div>
+    <div class="date-item">
+      <div class="date-dot" style="background:var(--ebay)"></div>
+      <div class="date-info">
+        <div class="date-title">Follow up — UBT & United Infra</div>
+        <div class="date-sub">Send LinkedIn messages</div>
+      </div>
+      <div class="date-badge-pill" style="background:var(--ebay-light);color:var(--ebay)" id="kd-followup"></div>
+    </div>
+    <div class="date-item">
+      <div class="date-dot" style="background:var(--css)"></div>
+      <div class="date-info">
+        <div class="date-title">Update LinkedIn URL & headline</div>
+        <div class="date-sub">Change from "thesocialnomad"</div>
+      </div>
+      <div class="date-badge-pill" style="background:#fee2e2;color:var(--danger)">Do today</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== TRACKER ========== -->
+<div class="screen" id="screen-tracker">
+  <div class="page-header">
+    <h1>📊 My Tracker</h1>
+    <p>HSE career · CSS study · eBay business</p>
+  </div>
+
+  <div class="section-tabs">
+    <div class="tab active" onclick="switchTab('hse')">🦺 HSE</div>
+    <div class="tab" onclick="switchTab('css')">📚 CSS</div>
+    <div class="tab" onclick="switchTab('ebay')">🛒 eBay</div>
+    <div class="tab" onclick="switchTab('apps')">📋 Apps</div>
+  </div>
+
+  <!-- HSE TAB -->
+  <div class="tab-content active" id="tab-hse">
+    <div class="stats-row" style="margin-top:12px">
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--hse)" id="hse-total-apps">0</div>
+        <div class="stat-label">Total applied</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--hse)" id="hse-interviews">0</div>
+        <div class="stat-label">Interviews</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--hse)" id="hse-connections">0</div>
+        <div class="stat-label">LI connections</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🦺 Today's HSE Tasks</div>
+      <div class="check-item" onclick="toggleCheck(this,null)">
+        <div class="check-box">✓</div>
+        <span class="check-text">Apply to 1 targeted role</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'hse-connections')">
+        <div class="check-box">✓</div>
+        <span class="check-text">Connect with HSE professional on LinkedIn</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,null)">
+        <div class="check-box">✓</div>
+        <span class="check-text">Post or comment on LinkedIn</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,null)">
+        <div class="check-box">✓</div>
+        <span class="check-text">Read HSE news or article</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,null)">
+        <div class="check-box">✓</div>
+        <span class="check-text">Review IOSH membership requirements</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🗒️ Notes</div>
+      <textarea class="input" placeholder="Today's HSE notes, who you messaged, roles you spotted..." id="hse-notes-field" oninput="saveField('hse-notes-field')"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📈 Qualification Roadmap</div>
+      <div class="check-item">
+        <div class="check-box" style="background:var(--hse);border-color:var(--hse);color:white">✓</div>
+        <span class="check-text">NEBOSH IGC <span class="tag" style="background:var(--ebay-light);color:var(--ebay)">Pending</span></span>
+      </div>
+      <div class="check-item">
+        <div class="check-box"></div>
+        <span class="check-text">Join IOSH as Student Member</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box"></div>
+        <span class="check-text">ISO 45001 Lead Auditor</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box"></div>
+        <span class="check-text">GradIOSH Status</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box"></div>
+        <span class="check-text">NEBOSH Diploma (Level 6)</span>
+      </div>
+      <div class="check-item">
+        <div class="check-box"></div>
+        <span class="check-text" style="border:none">NEBOSH Oil & Gas Certificate</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CSS TAB -->
+  <div class="tab-content" id="tab-css">
+    <div class="stats-row" style="margin-top:12px">
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--css)" id="css-total-hours">0</div>
+        <div class="stat-label">Total hours</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--css)" id="css-streak">0</div>
+        <div class="stat-label">Day streak</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--css)" id="css-sessions">0</div>
+        <div class="stat-label">Sessions</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📚 Log Study Session</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <input type="number" class="input" id="css-hrs-input" placeholder="Hours studied" min="0.5" max="12" step="0.5" style="flex:1">
+        <button class="btn btn-css btn-sm" onclick="logStudy()">Log</button>
+      </div>
+      <input type="text" class="input gap" id="css-topic-input" placeholder="Topic studied (e.g. Essay writing, Current Affairs)">
+    </div>
+
+    <div class="card">
+      <div class="card-title">✅ CSS Daily Tasks</div>
+      <div class="check-item" onclick="toggleCheck(this,null)">
+        <div class="check-box">✓</div>
+        <span class="check-text">Study session completed</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,null)">
+        <div class="check-box">✓</div>
+        <span class="check-text">Practice questions / past paper</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,null)">
+        <div class="check-box">✓</div>
+        <span class="check-text">Reviewed weak areas</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,null)">
+        <div class="check-box">✓</div>
+        <span class="check-text">Made revision notes</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🗒️ Study Notes</div>
+      <textarea class="input" placeholder="What you covered today, things to revisit..." id="css-notes-field" oninput="saveField('css-notes-field')"></textarea>
+    </div>
+  </div>
+
+  <!-- EBAY TAB -->
+  <div class="tab-content" id="tab-ebay">
+    <div class="card" style="margin-top:12px">
+      <div class="ebay-grid">
+        <div class="ebay-stat">
+          <div class="num" id="ebay-listings-t">0</div>
+          <div class="lbl">Active listings</div>
+        </div>
+        <div class="ebay-stat">
+          <div class="num" id="ebay-sales-t">0</div>
+          <div class="lbl">Total sales</div>
+        </div>
+        <div class="ebay-stat">
+          <div class="num">£<span id="ebay-rev-t">0</span></div>
+          <div class="lbl">Revenue</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🛒 Update Stats</div>
+      <div class="btn-row gap">
+        <button class="btn btn-ebay btn-sm" onclick="ebayInc('ebay-listings-t')">+ Listing</button>
+        <button class="btn btn-ebay btn-sm" onclick="ebaySale()">+ Sale</button>
+        <button class="btn btn-outline btn-sm" onclick="ebayDec('ebay-listings-t')">− Listing</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <input type="number" class="input" id="ebay-rev-input" placeholder="Add revenue £" min="0" step="0.01" style="flex:1">
+        <button class="btn btn-ebay btn-sm" onclick="addEbayRev()">Add</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">✅ eBay Daily Tasks</div>
+      <div class="check-item" onclick="toggleCheck(this,null)">
+        <div class="check-box">✓</div>
+        <span class="check-text">Check messages & orders</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,null)">
+        <div class="check-box">✓</div>
+        <span class="check-text">List or relist items</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,null)">
+        <div class="check-box">✓</div>
+        <span class="check-text">Pack & dispatch sales</span>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,null)">
+        <div class="check-box">✓</div>
+        <span class="check-text">Research new items to source</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🗒️ Business Notes</div>
+      <textarea class="input" placeholder="What sold, sourcing ideas, pricing notes..." id="ebay-notes-field" oninput="saveField('ebay-notes-field')"></textarea>
+    </div>
+  </div>
+
+  <!-- APPS TAB -->
+  <div class="tab-content" id="tab-apps">
+    <div class="card" style="margin-top:12px">
+      <div class="card-title">➕ Log Application</div>
+      <input type="text" class="input" id="new-company" placeholder="Company name" style="margin-bottom:8px">
+      <input type="text" class="input" id="new-role" placeholder="Role title" style="margin-bottom:8px">
+      <input type="text" class="input" id="new-location" placeholder="Location" style="margin-bottom:8px">
+      <select class="select" id="new-status" style="margin-bottom:10px">
+        <option value="applied">Applied</option>
+        <option value="pending">Awaiting response</option>
+        <option value="interview">Interview</option>
+        <option value="rejected">Rejected</option>
+      </select>
+      <button class="btn btn-hse" onclick="addApp()">Add Application</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 All Applications</div>
+      <div id="apps-list-render"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== AI TOOLS ========== -->
+<div class="screen" id="screen-ai">
+  <div class="page-header">
+    <h1>🤖 AI Assistant</h1>
+    <p>Your personal career & business AI</p>
+  </div>
+
+  <div class="ai-tabs">
+    <div class="ai-tab-card active" onclick="switchAI('cover',this)" id="ai-card-cover">
+      <div class="icon">✉️</div>
+      <div class="name">Cover Letter</div>
+      <div class="desc">Tailored for each role</div>
+    </div>
+    <div class="ai-tab-card" onclick="switchAI('jobs',this)" id="ai-card-jobs">
+      <div class="icon">🔍</div>
+      <div class="name">Job Analyser</div>
+      <div class="desc">Paste any job ad</div>
+    </div>
+    <div class="ai-tab-card" onclick="switchAI('linkedin',this)" id="ai-card-linkedin">
+      <div class="icon">💼</div>
+      <div class="name">LinkedIn Post</div>
+      <div class="desc">Generate posts</div>
+    </div>
+    <div class="ai-tab-card" onclick="switchAI('career',this)" id="ai-card-career">
+      <div class="icon">🎯</div>
+      <div class="name">Career Mentor</div>
+      <div class="desc">HSE advice & strategy</div>
+    </div>
+    <div class="ai-tab-card" onclick="switchAI('css',this)" id="ai-card-css">
+      <div class="icon">📖</div>
+      <div class="name">CSS Tutor</div>
+      <div class="desc">Exam prep & practice</div>
+    </div>
+    <div class="ai-tab-card" onclick="switchAI('ebay',this)" id="ai-card-ebay">
+      <div class="icon">🛒</div>
+      <div class="name">eBay Mentor</div>
+      <div class="desc">Business growth tips</div>
+    </div>
+  </div>
+
+  <div class="quick-prompts" id="quick-prompts-bar"></div>
+
+  <!-- DUAL AI MODE TOGGLE -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px 0">
+    <div style="display:flex;gap:8px;align-items:center">
+      <div id="mode-dual" onclick="setAIMode('dual')" style="padding:6px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;cursor:pointer;background:var(--ai);color:white">🟣🔵 Both</div>
+      <div id="mode-claude" onclick="setAIMode('claude')" style="padding:6px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;cursor:pointer;background:var(--bg);color:var(--muted);border:1.5px solid var(--border)">🟣 Claude</div>
+      <div id="mode-gemini" onclick="setAIMode('gemini')" style="padding:6px 14px;border-radius:20px;font-size:0.75rem;font-weight:700;cursor:pointer;background:var(--bg);color:var(--muted);border:1.5px solid var(--border)">🔵 Gemini</div>
+    </div>
+  </div>
+
+  <!-- DUAL PANEL CHAT -->
+  <div id="dual-chat" style="display:flex;gap:8px;margin:8px 16px 0;height:calc(100vh - 360px);min-height:280px">
+    <!-- Claude Panel -->
+    <div style="flex:1;display:flex;flex-direction:column;background:var(--white);border-radius:14px;box-shadow:var(--shadow);overflow:hidden">
+      <div style="padding:8px 12px;background:var(--ai-light);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px">
+        <span style="font-size:0.9rem">🟣</span>
+        <span style="font-size:0.75rem;font-weight:700;color:var(--ai)">Claude</span>
+      </div>
+      <div class="chat-messages" id="chat-claude" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px"></div>
+    </div>
+    <!-- Gemini Panel -->
+    <div style="flex:1;display:flex;flex-direction:column;background:var(--white);border-radius:14px;box-shadow:var(--shadow);overflow:hidden">
+      <div style="padding:8px 12px;background:#e8f0fe;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px">
+        <span style="font-size:0.9rem">🔵</span>
+        <span style="font-size:0.75rem;font-weight:700;color:#1a73e8">Gemini</span>
+      </div>
+      <div class="chat-messages" id="chat-gemini" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px"></div>
+    </div>
+  </div>
+
+  <!-- SINGLE PANEL CHAT (when not dual) -->
+  <div id="single-chat" style="display:none;margin:8px 16px 0;height:calc(100vh - 360px);min-height:280px;background:var(--white);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;flex-direction:column">
+    <div id="single-chat-header" style="padding:8px 12px;background:var(--ai-light);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px">
+      <span id="single-icon">🟣</span>
+      <span id="single-label" style="font-size:0.75rem;font-weight:700;color:var(--ai)">Claude</span>
+    </div>
+    <div class="chat-messages" id="chat-single" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+
+  <!-- SHARED INPUT -->
+  <div class="chat-input-area" style="margin:8px 16px 0;background:var(--white);border-radius:14px;box-shadow:var(--shadow);padding:12px;display:flex;gap:8px;align-items:flex-end">
+    <textarea class="chat-input" id="chat-input" placeholder="Ask both AIs at once..." rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"
+      oninput="autoResize(this)" style="background:var(--bg)"></textarea>
+    <button class="send-btn" onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+<!-- ========== PROFILE ========== -->
+<div class="screen" id="screen-profile">
+  <div class="page-header">
+    <h1>👤 My Profile</h1>
+    <p>Your goals and targets</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 5-Year Goal</div>
+    <p class="small">HSE/QSHE Manager in oil & gas — UK first, then Saudi Arabia or Qatar</p>
+    <div class="divider"></div>
+    <div class="check-item">
+      <div class="date-dot" style="background:var(--hse)"></div>
+      <span class="check-text">Year 1–2: First H&S Coordinator/Advisor role</span>
+    </div>
+    <div class="check-item">
+      <div class="date-dot" style="background:var(--hse)"></div>
+      <span class="check-text">Year 1–2: GradIOSH + ISO 45001 Lead Auditor</span>
+    </div>
+    <div class="check-item">
+      <div class="date-dot" style="background:var(--css)"></div>
+      <span class="check-text">Year 2–3: NEBOSH Diploma (Level 6)</span>
+    </div>
+    <div class="check-item">
+      <div class="date-dot" style="background:var(--css)"></div>
+      <span class="check-text">Year 3–4: NEBOSH Oil & Gas Certificate</span>
+    </div>
+    <div class="check-item">
+      <div class="date-dot" style="background:var(--ai)"></div>
+      <span class="check-text">Year 5: HSE Manager — Middle East or Australia</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📍 Current Position</div>
+    <div class="check-item">
+      <div class="date-dot" style="background:var(--hse)"></div>
+      <div>
+        <div class="date-title">Site Safety Support / Banksman</div>
+        <div class="date-sub">HFS Security → Metlen Benthead Solar Farm, Kilwinning</div>
+      </div>
+    </div>
+    <div class="check-item">
+      <div class="date-dot" style="background:var(--ebay)"></div>
+      <div>
+        <div class="date-title">NEBOSH IGC</div>
+        <div class="date-sub">RRC International · Result pending July 2026</div>
+      </div>
+    </div>
+    <div class="check-item">
+      <div class="date-dot" style="background:var(--css)"></div>
+      <div>
+        <div class="date-title">CSS Exam Preparation</div>
+        <div class="date-sub">Central Superior Services · Pakistan</div>
+      </div>
+    </div>
+    <div class="check-item">
+      <div class="date-dot" style="background:var(--ai)"></div>
+      <div>
+        <div class="date-title">eBay Business</div>
+        <div class="date-sub">Active · UK-based</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🗑️ Reset</div>
+    <button class="btn btn-outline" onclick="resetToday()" style="margin-bottom:8px">Reset today's checklist</button>
+    <button class="btn btn-outline" onclick="resetAll()" style="color:var(--danger);border-color:var(--danger)">Reset all data</button>
+  </div>
+</div>
+
+<!-- ========== BOTTOM NAV ========== -->
+<nav class="nav">
+  <div class="nav-item active" onclick="showScreen('home',this)">
+    <span class="icon">🏠</span>
+    <span class="label">Home</span>
+  </div>
+  <div class="nav-item" onclick="showScreen('tracker',this)">
+    <span class="icon">📊</span>
+    <span class="label">Tracker</span>
+  </div>
+  <div class="nav-item" onclick="showScreen('ai',this)">
+    <span class="icon">🤖</span>
+    <span class="label">AI Tools</span>
+  </div>
+  <div class="nav-item" onclick="showScreen('profile',this)">
+    <span class="icon">👤</span>
+    <span class="label">Profile</span>
+  </div>
+  <div class="nav-item" onclick="showScreen('settings',this)">
+    <span class="icon">⚙️</span>
+    <span class="label">Settings</span>
+  </div>
+</nav>
+
+<!-- SETTINGS SCREEN -->
+<div class="screen" id="screen-settings">
+  <div class="page-header">
+    <h1>⚙️ Settings</h1>
+    <p>API keys &amp; AI model selection</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🤖 Choose AI Model</div>
+    <p class="small" style="margin-bottom:12px">Switch between Claude and Gemini for your AI tools</p>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div onclick="selectModel('claude')" id="opt-claude" style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;border:2px solid var(--ai);background:var(--ai-light);cursor:pointer">
+        <span style="font-size:1.3rem">🟣</span>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:0.85rem">Claude (Anthropic)</div>
+          <div class="small">Built-in · No key needed</div>
+        </div>
+        <div id="check-claude" style="font-weight:700;color:var(--ai)">✓ Active</div>
+      </div>
+      <div onclick="selectModel('gemini')" id="opt-gemini" style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;border:2px solid var(--border);background:var(--bg);cursor:pointer">
+        <span style="font-size:1.3rem">🔵</span>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:0.85rem">Gemini (Google)</div>
+          <div class="small" id="gemini-status">Requires API key</div>
+        </div>
+        <div id="check-gemini" style="font-weight:700;color:var(--muted)">○</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔑 Gemini API Key</div>
+    <p class="small" style="margin-bottom:12px">Stored only on this device. Never shared with anyone except Google when you send a message.</p>
+    <div style="position:relative;margin-bottom:10px">
+      <input type="password" class="input" id="gemini-key-input" placeholder="Paste your Gemini API key here" autocomplete="off" style="padding-right:60px">
+      <button onclick="toggleKeyVis()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:0.8rem;font-weight:600" id="vis-btn">Show</button>
+    </div>
+    <button class="btn btn-primary" onclick="saveGeminiKey()">Save Key</button>
+    <p id="key-msg" class="small" style="margin-top:8px"></p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔒 Privacy</div>
+    <p class="small" style="margin-bottom:12px">Your Gemini key is saved in your browser local storage on this device only. It is sent directly to Google's API — never to Claude or Anthropic.</p>
+    <button class="btn btn-outline" onclick="removeGeminiKey()" style="color:var(--danger);border-color:var(--danger)">Remove Gemini Key</button>
+  </div>
+</div>
+
+<script>
+// ============ STORAGE ============
+const S = {
+  get: (k,d) => { try { const v=localStorage.getItem(k); return v!==null?JSON.parse(v):d; } catch{return d;} },
+  set: (k,v) => { try { localStorage.setItem(k,JSON.stringify(v)); } catch{} }
+};
+
+// ============ NAVIGATION ============
+function showScreen(id, el) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+}
+
+function goTo(screen, tab) {
+  showScreen(screen, document.querySelector(`.nav-item:nth-child(${screen==='tracker'?2:screen==='ai'?3:1})`));
+  if(tab) {
+    if(screen==='tracker') switchTab(tab);
+    if(screen==='ai') { const card=document.getElementById('ai-card-'+tab); if(card) switchAI(tab,card); }
+  }
+}
+
+// ============ DATE & GREETING ============
+function initDate() {
+  const now = new Date();
+  const h = now.getHours();
+  const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('greeting-text').textContent = `${greet}, Osaf 👋`;
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('greeting-date').textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+  const target = new Date('2026-07-31');
+  const diff = Math.ceil((target - now)/(1000*60*60*24));
+  document.getElementById('nebosh-days').textContent = diff > 0 ? diff : 0;
+  document.getElementById('kd-nebosh').textContent = diff > 0 ? `${diff} days` : 'Due!';
+
+  const fup = new Date('2026-07-01');
+  const fdiff = Math.ceil((fup - now)/(1000*60*60*24));
+  document.getElementById('kd-followup').textContent = fdiff > 0 ? `in ${fdiff} days` : fdiff===0?'Today!':'Follow up!';
+}
+
+// ============ CHECKLIST ============
+function toggleCheck(el, counterId) {
+  el.classList.toggle('done');
+  el.querySelector('.check-box').textContent = el.classList.contains('done') ? '✓' : '';
+  updateHomeProgress();
+  if(counterId) {
+    let v = S.get(counterId,0);
+    v = el.classList.contains('done') ? v+1 : Math.max(0,v-1);
+    S.set(counterId,v);
+    const el2=document.getElementById(counterId);
+    if(el2) el2.textContent=v;
+  }
+}
+
+function updateHomeProgress() {
+  const items = document.querySelectorAll('#home-checklist .check-item');
+  const done = document.querySelectorAll('#home-checklist .check-item.done').length;
+  const pct = items.length ? Math.round(done/items.length*100) : 0;
+  document.getElementById('home-prog-bar').style.width = pct+'%';
+  document.getElementById('home-prog-pct').textContent = pct+'%';
+}
+
+// ============ TABS ============
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  const tabs = ['hse','css','ebay','apps'];
+  const idx = tabs.indexOf(id);
+  document.querySelectorAll('.tab')[idx]?.classList.add('active');
+  document.getElementById('tab-'+id)?.classList.add('active');
+}
+
+// ============ STATS ============
+function ebayInc(id) {
+  let v=S.get(id,0)+1; S.set(id,v);
+  document.getElementById(id).textContent=v;
+}
+function ebayDec(id) {
+  let v=Math.max(0,S.get(id,0)-1); S.set(id,v);
+  document.getElementById(id).textContent=v;
+}
+function ebaySale() {
+  let v=S.get('ebay-sales-t',0)+1; S.set('ebay-sales-t',v);
+  document.getElementById('ebay-sales-t').textContent=v;
+  ebayDec('ebay-listings-t');
+}
+function addEbayRev() {
+  const inp=document.getElementById('ebay-rev-input');
+  const amt=parseFloat(inp.value)||0;
+  let t=S.get('ebay-rev-t',0)+amt; S.set('ebay-rev-t',t);
+  document.getElementById('ebay-rev-t').textContent=t.toFixed(2);
+  document.getElementById('home-rev').textContent=t.toFixed(2);
+  inp.value='';
+}
+function logStudy() {
+  const hrs=parseFloat(document.getElementById('css-hrs-input').value)||0;
+  if(!hrs) return;
+  let total=S.get('css-total-hours',0)+hrs; S.set('css-total-hours',total);
+  let streak=S.get('css-streak',0)+1; S.set('css-streak',streak);
+  let sessions=S.get('css-sessions',0)+1; S.set('css-sessions',sessions);
+  document.getElementById('css-total-hours').textContent=total;
+  document.getElementById('css-streak').textContent=streak;
+  document.getElementById('css-sessions').textContent=sessions;
+  document.getElementById('home-study').textContent=total;
+  document.getElementById('css-hrs-input').value='';
+}
+
+// ============ NOTES ============
+function saveField(id) { S.set(id, document.getElementById(id).value); }
+
+// ============ APPS ============
+let apps = S.get('apps', [
+  {company:'UBT',role:'HSEQ Coordinator',location:'Ellon, Scotland',status:'applied',date:'28 Jun 2026'},
+  {company:'United Infrastructure',role:'SHEQ Advisor',location:'Kilmarnock',status:'applied',date:'28 Jun 2026'},
+  {company:'Boden Group',role:'H&S & Facilities Coordinator',location:'Andover',status:'applied',date:'28 Jun 2026'},
+]);
+
+function renderApps() {
+  const el=document.getElementById('apps-list-render');
+  if(!apps.length){el.innerHTML='<div class="empty">No applications yet</div>';return;}
+  el.innerHTML=apps.map((a,i)=>`
+    <div class="app-row">
+      <div class="app-info">
+        <div class="app-company">${a.company}</div>
+        <div class="app-role">${a.role} · ${a.location}</div>
+        <div class="app-role">${a.date}</div>
+      </div>
+      <select class="status-pill s-${a.status}" onchange="updateAppStatus(${i},this.value)" style="border:none;cursor:pointer;font-weight:700;font-size:0.68px;padding:4px 8px;border-radius:20px">
+        <option value="applied" ${a.status==='applied'?'selected':''}>Applied</option>
+        <option value="pending" ${a.status==='pending'?'selected':''}>Awaiting</option>
+        <option value="interview" ${a.status==='interview'?'selected':''}>Interview</option>
+        <option value="rejected" ${a.status==='rejected'?'selected':''}>Rejected</option>
+      </select>
+      <button onclick="deleteApp(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:4px 8px;font-size:1rem">✕</button>
+    </div>`).join('');
+  document.getElementById('home-apps').textContent=apps.length;
+  document.getElementById('hse-total-apps').textContent=apps.length;
+  const interviews=apps.filter(a=>a.status==='interview').length;
+  document.getElementById('hse-interviews').textContent=interviews;
+  S.set('apps',apps);
+}
+
+function addApp() {
+  const c=document.getElementById('new-company').value.trim();
+  const r=document.getElementById('new-role').value.trim();
+  if(!c||!r) return;
+  const now=new Date();
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  apps.push({
+    company:c, role:r,
+    location:document.getElementById('new-location').value.trim(),
+    status:document.getElementById('new-status').value,
+    date:`${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`
+  });
+  ['new-company','new-role','new-location'].forEach(id=>document.getElementById(id).value='');
+  renderApps();
+}
+
+function updateAppStatus(i,val) { apps[i].status=val; renderApps(); }
+function deleteApp(i) { apps.splice(i,1); renderApps(); }
+
+// ============ AI CHAT ============
+const AI_MODES = {
+  cover: {
+    name: 'Cover Letter Writer',
+    system: `You are a professional cover letter writer helping Osaf Ali, a Health & Safety professional working at Metlen Benthead Solar Farm in Kilwinning, Scotland as a Site Safety Support Operative/Banksman through HFS Security Services. He is completing his NEBOSH IGC (result pending July 2026). He is based in Airdrie, Scotland. His goal is to land an HSE Coordinator or Advisor role. Write professional, concise, tailored cover letters. Ask for the job title and company if not provided.`,
+    prompts: ['Write cover letter for HSE Coordinator', 'Cover letter for SHEQ Advisor role', 'Make it more concise', 'Add more about my site experience']
+  },
+  jobs: {
+    name: 'Job Ad Analyser',
+    system: `You are a career advisor helping Osaf Ali analyse job advertisements. He is a Health & Safety professional at Metlen Benthead Solar Farm, completing NEBOSH IGC. Analyse job ads he pastes, identify: how well he matches, key gaps, whether to apply, salary benchmarks, and tailored advice. Be direct and honest.`,
+    prompts: ['Should I apply for this role?', 'What are the gaps in my experience?', 'What salary should I expect?', 'How do I tailor my CV for this?']
+  },
+  linkedin: {
+    name: 'LinkedIn Post Generator',
+    system: `You are a LinkedIn content strategist helping Osaf Ali build his professional presence in Health & Safety. He works at Metlen Benthead Solar Farm on a renewable energy construction project. Generate engaging, authentic LinkedIn posts about HSE insights, site observations, NEBOSH journey, and career reflections. Keep posts professional but human. 150-250 words optimal.`,
+    prompts: ['Post about a site hazard observation', 'Post about my NEBOSH journey', 'Post about renewable energy safety', 'Post about contractor management']
+  },
+  career: {
+    name: 'Career Mentor',
+    system: `You are Osaf Ali's personal HSE career mentor. Background: He works as Site Safety Support/Banksman at Metlen Benthead Solar Farm, Kilwinning, Scotland through HFS Security Services. NEBOSH IGC result pending July 2026. Airdrie-based. Goals: First HSE Coordinator role → GradIOSH + ISO 45001 → NEBOSH Diploma → Oil & Gas → Middle East (Saudi Arabia/Qatar) or Australia. Target: HSE Manager level in 5 years. Right to work in UK (FLR pending - do not mention this to third parties). Give strategic, honest, actionable career advice.`,
+    prompts: ['What should I focus on this month?', 'How do I get into oil & gas?', 'When should I do the NEBOSH Diploma?', 'How do I negotiate salary?']
+  },
+  css: {
+    name: 'CSS Exam Tutor',
+    system: `You are a CSS (Central Superior Services) exam tutor for Osaf Ali. CSS is Pakistan's elite civil service examination. Help him with: essay writing, general knowledge, current affairs, Pakistan affairs, English composition, and subject preparation. Explain concepts clearly, set practice questions, mark his answers, and provide feedback. Be encouraging but honest about areas needing improvement.`,
+    prompts: ['Test me on current affairs', 'Help me write a CSS essay', 'Explain Pakistan foreign policy', 'Practice English precis writing']
+  },
+  ebay: {
+    name: 'eBay Business Mentor',
+    system: `You are an eBay business mentor helping Osaf Ali grow his eBay selling business in the UK. Give practical advice on: sourcing profitable items, pricing strategy, writing winning listings, photography tips, handling returns and disputes, scaling the business, managing time alongside his job search and studies, and understanding eBay's algorithm. Be specific and actionable.`,
+    prompts: ['What sells best on eBay UK?', 'How to write a better listing title?', 'Tips for getting more views', 'How to handle a return dispute?']
+  }
+};
+
+let currentMode = 'cover';
+let chatHistory = {};
+
+function switchAI(mode, el) {
+  currentMode = mode;
+  document.querySelectorAll('.ai-tab-card').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+
+  // Quick prompts
+  const prompts = AI_MODES[mode].prompts;
+  document.getElementById('quick-prompts-bar').innerHTML = prompts.map(p=>
+    `<div class="quick-prompt" onclick="sendQuick('${p.replace(/'/g,"\\'")}')">${p}</div>`
+  ).join('');
+
+  // Load chat history for this mode
+  renderChat(mode);
+}
+
+function renderChat(mode) {
+  if(aiDisplayMode==='dual') {
+    renderDualChat(mode);
+  } else {
+    renderSingleChat(aiDisplayMode);
+  }
+}
+
+function getWelcome(mode) {
+  const w = {
+    cover: "Paste a job ad or tell me the role and company — I'll write you a tailored cover letter.",
+    jobs: "Paste a job ad and I'll tell you whether to apply, how you match, and what to highlight.",
+    linkedin: "Tell me what you want to post about and I'll create an engaging LinkedIn post for you.",
+    career: "Ask me anything about your HSE career path, qualifications, job search strategy, or the Middle East market.",
+    css: "Tell me which CSS subject you want to study or ask me to test you — let's get to work.",
+    ebay: "Ask me anything about growing your eBay business — sourcing, listings, pricing, scaling."
+  };
+  return w[mode] || "How can I help you today?";
+}
+
+function formatMsg(text) {
+  return text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+}
+
+function sendQuick(text) {
+  document.getElementById('chat-input').value = text;
+  sendMessage();
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+  autoResize(input);
+
+  if(!chatHistory[currentMode]) chatHistory[currentMode] = [];
+  chatHistory[currentMode].push({role:'user', content:text});
+  renderChat(currentMode);
+
+  // Thinking indicator
+  const msgEl = document.getElementById('chat-messages');
+  const thinking = document.createElement('div');
+  thinking.className = 'msg thinking';
+  thinking.textContent = 'Thinking...';
+  msgEl.appendChild(thinking);
+  msgEl.scrollTop = msgEl.scrollHeight;
+
+  try {
+    const mode = AI_MODES[currentMode];
+    const messages = chatHistory[currentMode].map(m=>({role:m.role,content:m.content}));
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: mode.system,
+        messages: messages
+      })
+    });
+
+    const data = await response.json();
+    thinking.remove();
+
+    const reply = data.content?.[0]?.text || 'Sorry, something went wrong. Please try again.';
+    chatHistory[currentMode].push({role:'assistant', content:reply});
+    renderChat(currentMode);
+
+  } catch(err) {
+    thinking.remove();
+    const errMsg = document.createElement('div');
+    errMsg.className = 'msg ai';
+    errMsg.textContent = 'Connection error. Please check your internet and try again.';
+    msgEl.appendChild(errMsg);
+    msgEl.scrollTop = msgEl.scrollHeight;
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+
+// ============ SETTINGS & GEMINI ============
+let currentModel = S.get('ai-model','claude');
+
+function selectModel(model) {
+  currentModel = model;
+  S.set('ai-model', model);
+  updateModelUI();
+  chatHistory = {};
+  renderChat(currentAIMode || currentMode);
+}
+
+function updateModelUI() {
+  const claude = document.getElementById('opt-claude');
+  const gemini = document.getElementById('opt-gemini');
+  const checkC = document.getElementById('check-claude');
+  const checkG = document.getElementById('check-gemini');
+  if(!claude || !gemini) return;
+  if(currentModel === 'claude') {
+    claude.style.border = '2px solid var(--ai)';
+    claude.style.background = 'var(--ai-light)';
+    checkC.textContent = '✓ Active'; checkC.style.color = 'var(--ai)';
+    gemini.style.border = '2px solid var(--border)';
+    gemini.style.background = 'var(--bg)';
+    checkG.textContent = '○'; checkG.style.color = 'var(--muted)';
+  } else {
+    gemini.style.border = '2px solid #1a73e8';
+    gemini.style.background = '#e8f0fe';
+    checkG.textContent = '✓ Active'; checkG.style.color = '#1a73e8';
+    claude.style.border = '2px solid var(--border)';
+    claude.style.background = 'var(--bg)';
+    checkC.textContent = '○'; checkC.style.color = 'var(--muted)';
+  }
+  const key = S.get('gemini-key','');
+  const statusEl = document.getElementById('gemini-status');
+  if(statusEl) statusEl.textContent = key ? 'Key saved ✓' : 'Requires API key';
+}
+
+function saveGeminiKey() {
+  const key = document.getElementById('gemini-key-input').value.trim();
+  if(!key) { document.getElementById('key-msg').textContent = 'Please enter a key first.'; return; }
+  S.set('gemini-key', key);
+  document.getElementById('gemini-key-input').value = '';
+  document.getElementById('key-msg').style.color = 'var(--success)';
+  document.getElementById('key-msg').textContent = '✓ Key saved securely on this device';
+  updateModelUI();
+  setTimeout(()=>{ const el=document.getElementById('key-msg'); if(el) el.textContent=''; }, 3000);
+}
+
+function removeGeminiKey() {
+  if(!confirm('Remove your Gemini API key?')) return;
+  S.set('gemini-key','');
+  if(currentModel==='gemini') selectModel('claude');
+  updateModelUI();
+}
+
+function toggleKeyVis() {
+  const inp = document.getElementById('gemini-key-input');
+  const btn = document.getElementById('vis-btn');
+  if(!inp) return;
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.textContent = inp.type === 'password' ? 'Show' : 'Hide';
+}
+
+let currentAIMode = 'cover';
+
+// ============ DUAL AI MODE ============
+let aiDisplayMode = 'dual'; // dual | claude | gemini
+let dualHistory = { claude: {}, gemini: {} };
+
+function setAIMode(mode) {
+  aiDisplayMode = mode;
+  const dual = document.getElementById('dual-chat');
+  const single = document.getElementById('single-chat');
+  ['dual','claude','gemini'].forEach(m => {
+    const el = document.getElementById('mode-'+m);
+    if(!el) return;
+    el.style.background = m===mode ? 'var(--ai)' : 'var(--bg)';
+    el.style.color = m===mode ? 'white' : 'var(--muted)';
+    el.style.border = m===mode ? 'none' : '1.5px solid var(--border)';
+  });
+  if(mode==='dual') {
+    dual.style.display='flex';
+    single.style.display='none';
+  } else {
+    dual.style.display='none';
+    single.style.display='flex';
+    single.style.flexDirection='column';
+    const hdr = document.getElementById('single-chat-header');
+    const icon = document.getElementById('single-icon');
+    const lbl = document.getElementById('single-label');
+    if(mode==='gemini') {
+      hdr.style.background='#e8f0fe';
+      icon.textContent='🔵'; lbl.textContent='Gemini'; lbl.style.color='#1a73e8';
+    } else {
+      hdr.style.background='var(--ai-light)';
+      icon.textContent='🟣'; lbl.textContent='Claude'; lbl.style.color='var(--ai)';
+    }
+    renderSingleChat(mode);
+  }
+}
+
+function renderSingleChat(model) {
+  const mode = currentAIMode || 'cover';
+  const msgs = (dualHistory[model]||{})[mode] || [];
+  const el = document.getElementById('chat-single');
+  if(!el) return;
+  if(!msgs.length) {
+    el.innerHTML = `<div class="msg ai">Hi Osaf! I'm <strong>${model==='gemini'?'Gemini':'Claude'}</strong> — your ${AI_MODES[mode].name}. ${getWelcome(mode)}</div>`;
+  } else {
+    el.innerHTML = msgs.map(m=>`<div class="msg ${m.role==='user'?'user':'ai'}">${formatMsg(m.content)}</div>`).join('');
+  }
+  el.scrollTop = el.scrollHeight;
+}
+
+function renderDualChat(mode) {
+  ['claude','gemini'].forEach(model => {
+    const msgs = (dualHistory[model]||{})[mode] || [];
+    const el = document.getElementById('chat-'+model);
+    if(!el) return;
+    if(!msgs.length) {
+      el.innerHTML = `<div class="msg ai" style="font-size:0.78rem">${getWelcome(mode)}</div>`;
+    } else {
+      el.innerHTML = msgs.map(m=>`<div class="msg ${m.role==='user'?'user':'ai'}" style="font-size:0.78rem">${formatMsg(m.content)}</div>`).join('');
+    }
+    el.scrollTop = el.scrollHeight;
+  });
+}
+
+async function callClaude(messages, system) {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:800, system, messages })
+  });
+  const data = await response.json();
+  return data.content?.[0]?.text || 'No response from Claude.';
+}
+
+async function callGemini(messages, system) {
+  const geminiKey = S.get('gemini-key','');
+  if(!geminiKey) return '⚠️ No Gemini key. Go to ⚙️ Settings to add your key.';
+  const geminiMessages = messages.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ system_instruction:{parts:[{text:system}]}, contents:geminiMessages })
+  });
+  const data = await response.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response from Gemini. Check your key in Settings.';
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+  autoResize(input);
+
+  const mode = currentAIMode || 'cover';
+  const modeConfig = AI_MODES[mode];
+
+  // Init history
+  if(!dualHistory.claude[mode]) dualHistory.claude[mode] = [];
+  if(!dualHistory.gemini[mode]) dualHistory.gemini[mode] = [];
+
+  // Add user message to both
+  dualHistory.claude[mode].push({role:'user',content:text});
+  dualHistory.gemini[mode].push({role:'user',content:text});
+
+  if(aiDisplayMode==='dual') {
+    // Show user message in both panels
+    renderDualChat(mode);
+
+    // Add thinking to both
+    const claudeEl = document.getElementById('chat-claude');
+    const geminiEl = document.getElementById('chat-gemini');
+    const t1 = document.createElement('div'); t1.className='msg thinking'; t1.style.fontSize='0.78rem'; t1.textContent='Thinking...'; claudeEl.appendChild(t1); claudeEl.scrollTop=claudeEl.scrollHeight;
+    const t2 = document.createElement('div'); t2.className='msg thinking'; t2.style.fontSize='0.78rem'; t2.textContent='Thinking...'; geminiEl.appendChild(t2); geminiEl.scrollTop=geminiEl.scrollHeight;
+
+    // Call both simultaneously
+    const claudeMsgs = dualHistory.claude[mode].slice(0,-1).map(m=>({role:m.role,content:m.content})).concat([{role:'user',content:text}]);
+    const geminiMsgs = dualHistory.gemini[mode].slice(0,-1).map(m=>({role:m.role,content:m.content})).concat([{role:'user',content:text}]);
+
+    const [claudeReply, geminiReply] = await Promise.allSettled([
+      callClaude(claudeMsgs, modeConfig.system),
+      callGemini(geminiMsgs, modeConfig.system)
+    ]);
+
+    t1.remove(); t2.remove();
+
+    const cr = claudeReply.status==='fulfilled' ? claudeReply.value : 'Claude error. Try again.';
+    const gr = geminiReply.status==='fulfilled' ? geminiReply.value : 'Gemini error. Check your key in Settings.';
+
+    dualHistory.claude[mode].push({role:'assistant',content:cr});
+    dualHistory.gemini[mode].push({role:'assistant',content:gr});
+    renderDualChat(mode);
+
+  } else {
+    // Single model mode
+    const el = document.getElementById('chat-single');
+    renderSingleChat(aiDisplayMode);
+    const thinking = document.createElement('div'); thinking.className='msg thinking'; thinking.textContent='Thinking...'; el.appendChild(thinking); el.scrollTop=el.scrollHeight;
+
+    const msgs = dualHistory[aiDisplayMode][mode].slice(0,-1).concat([{role:'user',content:text}]);
+    let reply = '';
+    try {
+      reply = aiDisplayMode==='gemini' ? await callGemini(msgs, modeConfig.system) : await callClaude(msgs, modeConfig.system);
+    } catch(e) { reply = 'Connection error. Try again.'; }
+
+    thinking.remove();
+    dualHistory[aiDisplayMode][mode].push({role:'assistant',content:reply});
+    renderSingleChat(aiDisplayMode);
+  }
+}
+
+function switchAI(mode, el) {
+  currentAIMode = mode;
+  currentMode = mode;
+  document.querySelectorAll('.ai-tab-card').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const prompts = AI_MODES[mode].prompts;
+  document.getElementById('quick-prompts-bar').innerHTML = prompts.map(p=>
+    `<div class="quick-prompt" onclick="sendQuick('${p.replace(/'/g,"\'")}'">${p}</div>`
+  ).join('');
+  renderChat(mode);
+}
+
+// ============ RESET ============
+function resetToday() {
+  document.querySelectorAll('.check-item').forEach(el=>{
+    el.classList.remove('done');
+    el.querySelector('.check-box').textContent='';
+  });
+  updateHomeProgress();
+}
+
+function resetAll() {
+  if(!confirm('Reset ALL data? This cannot be undone.')) return;
+  localStorage.clear();
+  location.reload();
+}
+
+// ============ INIT ============
+function init() {
+  initDate();
+
+  // Load saved stats
+  const statsIds = ['hse-total-apps','hse-interviews','hse-connections','css-total-hours','css-streak','css-sessions','ebay-listings-t','ebay-sales-t'];
+  statsIds.forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=S.get(id,0); });
+
+  const rev=S.get('ebay-rev-t',0);
+  document.getElementById('ebay-rev-t').textContent=parseFloat(rev).toFixed(2);
+  document.getElementById('home-rev').textContent=parseFloat(rev).toFixed(2);
+  document.getElementById('home-study').textContent=S.get('css-total-hours',0);
+
+  // Load notes
+  ['hse-notes-field','css-notes-field','ebay-notes-field'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value=S.get(id,'');
+  });
+
+  renderApps();
+  switchAI('cover', document.getElementById('ai-card-cover'));
+  updateHomeProgress();
+  updateModelUI();
+}
+
+init();
+</script>
+</body>
+</html>
